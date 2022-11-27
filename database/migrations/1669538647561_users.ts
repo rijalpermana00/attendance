@@ -17,8 +17,8 @@ export default class extends BaseSchema {
       table.timestamp('terminate_dtm').nullable();
       table.integer('role_id').nullable();
       table.integer('status_id').nullable();
-      table.timestamp('birth_date').notNullable();
-      table.timestamp('birth_place').notNullable();
+      table.timestamp('birth_date').nullable();
+      table.timestamp('birth_place').nullable();
       table.string('remember_me_token').nullable();
 
       /**
