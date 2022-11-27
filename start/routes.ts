@@ -47,27 +47,6 @@ Route.get('logout', 'UsersController.logout').middleware("auth:api")
 
 Route.group(() => {
 	Route.get('/users', 'UsersController.index')
-	Route.get('/posts', 'PostsController.index')
-	Route.group(() => {
-		Route.post('create', 'User/HouseHoldsController.store').middleware("auth:api")
-	}).prefix('/household')
-	
-	Route.group(() => {
-		Route.post('create', 'Transaction/CategoriesController.store').middleware("auth:api")
-	}).prefix('/category')
-	
-	Route.group(() => {
-		Route.post('create', 'Transaction/SubsController.store').middleware("auth:api")
-	}).prefix('/subcategory')
-	
-	Route.group(() => {
-		Route.post('create', 'TransactionsController.store').middleware("auth:api")
-		Route.get('/', 'TransactionsController.index').middleware("auth:api")
-		Route.post('update', 'TransactionsController.update').middleware("auth:api")
-		Route.get('list', 'TransactionsController.list').middleware("auth:api")
-	}).prefix('/transaction')
-	
-	
 }).prefix('/api')
 
 Route.get('/index', 'UsersController.index').middleware("auth:api")
