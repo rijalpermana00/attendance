@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
+import CreateUser from 'App/Mailers/CreateUser'
 
 export default class UsersController {
   
@@ -53,15 +54,15 @@ export default class UsersController {
                 'signedUrl': await user.signedUrl(user.email,'verifyEmail')
             }
 
-            // await new CreateUser(request).send();
+            await new CreateUser(request).send();
 
-            // return {
-            //     code : 0,
-            //     info : 'User Created',
-            //     data : await auth.use('api').login(user, {
-            //         expiresIn: '10 days',
-            //       })
-            // };
+            return {
+                code : 0,
+                info : 'User Created',
+                data : await auth.use('api').login(user, {
+                    expiresIn: '10 days',
+                  })
+            };
 
         }else{
 
@@ -98,9 +99,9 @@ export default class UsersController {
       try {
           
           const user = new User();
-          // const result = await user.authenticate(auth,data);
+          const result = await user.authenticate(auth,data);
 
-          // return result;
+          return result;
 
       } catch (e) {
           
@@ -184,8 +185,8 @@ export default class UsersController {
       try {
           
           const user = new User();
-          // const result = await user.forgotPassword(data);
-          // return result;
+          const result = await user.forgotPassword(data);
+          return result;
 
       } catch (e) {
           
