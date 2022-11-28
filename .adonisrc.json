@@ -29,7 +29,8 @@
     "@adonisjs/auth",
     "@adonisjs/lucid",
     "@adonisjs/mail",
-    "@adonisjs/bouncer"
+    "@adonisjs/bouncer",
+    "@adonisjs/redis"
   ],
   "metaFiles": [
     {
