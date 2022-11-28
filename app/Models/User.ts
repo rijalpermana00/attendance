@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
 import Route from '@ioc:Adonis/Core/Route'
 import Env from '@ioc:Adonis/Core/Env'
 import UserLocked from 'App/Mailers/UserLocked'
 import ForgotPassword from 'App/Mailers/ForgotPassword'
 import { generate } from 'generate-password-ts'
+import {v4 as uuidv4 } from 'uuid'
 
 export default class User extends BaseModel {
     
@@ -19,6 +20,9 @@ export default class User extends BaseModel {
     
     @column({ isPrimary: true })
     public id: number
+    
+    @column()
+    public uuid: string
 
     @column()
     public name: string
@@ -61,6 +65,11 @@ export default class User extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updatedAt: DateTime
+    
+    @beforeCreate()
+    public static assignUuid(user: User) {
+        user.uuid = uuidv4()
+    }
 
     @beforeSave()
     public static async hashPassword (user: User) {
