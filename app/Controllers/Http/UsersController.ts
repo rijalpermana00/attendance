@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
 import CreateUser from 'App/Mailers/CreateUser'
+import Redis from '@ioc:Adonis/Addons/Redis';
 
 export default class UsersController {
   
@@ -54,7 +55,12 @@ export default class UsersController {
                     'signedUrl': await user.signedUrl(user.email,'verifyEmail')
                 }
 
+                /* Send Email */
                 await new CreateUser(request).send();
+                
+                /* set redis */
+                let setRedis = await Redis.set('user_' + user.uuid, JSON.stringify(user))
+                console.log(setRedis)
 
                 return {
                     code : 0,
