@@ -224,7 +224,8 @@ export default class UsersController {
         
         if (data?.filter) {
             
-            var filter = data?filter
+            var filter = data?.filter
+            
         }
         
         const user = new User();
