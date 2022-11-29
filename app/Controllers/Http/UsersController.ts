@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
 import CreateUser from 'App/Mailers/CreateUser'
+import { Roles } from 'App/Enums/Roles';
 
 export default class UsersController {
   
@@ -39,7 +40,7 @@ export default class UsersController {
             user.name = userValidation.name
             user.phone = userValidation.phone
             user.email = userValidation.email
-            user.role_id = User.USER
+            user.role_id = Roles.USER
             user.avatar = (typeof data.pictures !== 'undefined') ? data.pictures : null
             user.language = (typeof data.language !== 'undefined') ? data.language : 'en'
             user.status_id = User.ACTIVE

@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
-import { Status } from './Enums/Status'
+import { Status } from '../Enums/Status'
 
 export default class ShiftMap extends BaseModel {
   public static table = 'shift_maps'

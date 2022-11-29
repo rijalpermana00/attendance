@@ -7,16 +7,9 @@ import UserLocked from 'App/Mailers/UserLocked'
 import ForgotPassword from 'App/Mailers/ForgotPassword'
 import { generate } from 'generate-password-ts'
 import {v4 as uuidv4 } from 'uuid'
+import { UserStatus } from 'App/Enums/UserStatus'
 
 export default class User extends BaseModel {
-    
-    static readonly ACTIVE :number = 1
-    static readonly INACTIVE :number = 2
-    static readonly SUSPEND :number = 3
-    static readonly BANNED :number = 4
-    
-    static readonly ADMIN :number = 1
-    static readonly USER :number = 2
     
     @column({ isPrimary: true })
     public id: number
@@ -133,23 +126,21 @@ export default class User extends BaseModel {
         
             if (e.code === 'E_INVALID_AUTH_PASSWORD') {
 
-                if(user.status_id === User.ACTIVE){
+                if(user.status_id === UserStatus.ACTIVE){
 
                     if ((retries > 0) && (user.attempts >= retries)) {
 
-                        if (user.status_id !== User.SUSPEND) {
-                            user.status_id = User.SUSPEND;
-                            user.updatedAt = DateTime.local();
-                            user.save();
+                        user.status_id = UserStatus.SUSPEND;
+                        user.updatedAt = DateTime.local();
+                        user.save();
 
-                            let request = {
-                                'name':user.name,
-                                'email':user.email,
-                                'signedUrl': await this.signedUrl(user.email,'lockedAccount')
-                            }
-
-                            await new UserLocked(request).send();
+                        let request = {
+                            'name':user.name,
+                            'email':user.email,
+                            'signedUrl': await this.signedUrl(user.email,'lockedAccount')
                         }
+
+                        await new UserLocked(request).send();
                         
                         return {
                             code : '401',
@@ -170,6 +161,14 @@ export default class User extends BaseModel {
                         data : null
                     };
 
+                }else if(user.status_id === UserStatus.SUSPEND){
+                    
+                    return {
+                        code : '401',
+                        info : 'User is Locked.',
+                        data : null
+                    };
+                    
                 }else{
 
                     return {
