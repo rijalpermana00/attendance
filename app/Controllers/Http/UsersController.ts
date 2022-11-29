@@ -4,6 +4,7 @@ import User from 'App/Models/User'
 import CreateUser from 'App/Mailers/CreateUser'
 import { Roles } from 'App/Enums/Roles';
 import { UserStatus } from 'App/Enums/UserStatus';
+import Generic from 'App/Models/Generic/Generic';
 
 export default class UsersController {
   
@@ -207,30 +208,20 @@ export default class UsersController {
     
     public async list({request}: HttpContextContract){
         
-        let req = request.only(['code','info','data']);
-        
-        if(req?.data){
-
-            var data = JSON.parse(req.data);
-
-        }else{
+        try {
+            
+            const user = new User();
+            const list = user.list()
+            
+            return list
+            
+        } catch (e) {
             
             return {
-                code : 415,
-                info : 'Json is not valid',
-                data : null
-            };
+                code : 99,
+                info : e.code,
+                data : e.info,
+            }
         }
-        
-        if (data?.filter) {
-            
-            var filter = data?.filter
-            
-        }
-        
-        const user = new User();
-        const list = user.list(filter)
-        
-        return list
     }
 }

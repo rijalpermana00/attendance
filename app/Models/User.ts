@@ -222,20 +222,11 @@ export default class User extends BaseModel {
 
     }
     
-    public async list(data:any){
+    public async list(){
+    
+        const list = await User.all()
         
-        // if(data?.filter){
-            
-        //     const filter = data?.filter;
-            console.log(data)
-            
-            
-        // }else{
-            const list = await User.all()
-            
-            return list
-        // }
-        
+        return list    
         
     }
 }

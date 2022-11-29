@@ -46,7 +46,7 @@ Route.post('login', 'UsersController.login')
 Route.get('logout', 'UsersController.logout').middleware("auth:api")
 
 Route.group(() => {
-	Route.get('/users', 'UsersController.list').middleware("role:admin")
+	Route.get('/users', 'UsersController.list').middleware(["auth:api","role:admin"])
 	
 }).prefix('/api')
 
