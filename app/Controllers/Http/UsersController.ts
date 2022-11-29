@@ -66,7 +66,7 @@ export default class UsersController {
                     code : 0,
                     info : 'User Created',
                     data : await auth.use('api').login(user, {
-                        expiresIn: '10 days',
+                        expiresIn: '10m',
                     })
                 };
 
