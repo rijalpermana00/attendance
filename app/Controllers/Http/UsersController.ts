@@ -204,4 +204,32 @@ export default class UsersController {
             }
         }
     }
+    
+    public async list({request}: HttpContextContract){
+        
+        let req = request.only(['code','info','data']);
+        
+        if(req?.data){
+
+            var data = JSON.parse(req.data);
+
+        }else{
+            
+            return {
+                code : 415,
+                info : 'Json is not valid',
+                data : null
+            };
+        }
+        
+        if (data?.filter) {
+            
+            var filter = data?filter
+        }
+        
+        const user = new User();
+        const list = user.list(filter)
+        
+        return list
+    }
 }
