@@ -10,13 +10,13 @@ import {v4 as uuidv4 } from 'uuid'
 
 export default class User extends BaseModel {
     
-    static readonly STATUS_CANDIDATE :number = 0
-    static readonly STATUS_ACTIVE :number = 1
-    static readonly STATUS_INACTIVE :number = 2
-    static readonly STATUS_LOCK :number = 3
-    static readonly STATUS_SUSPEND :number = 4
-    static readonly STATUS_EXPIRED :number = 5
-    static readonly STATUS_FORCE_CHANGE_PASS :number = 6
+    static readonly ACTIVE :number = 1
+    static readonly INACTIVE :number = 2
+    static readonly SUSPEND :number = 3
+    static readonly BANNED :number = 4
+    
+    static readonly ADMIN :number = 1
+    static readonly USER :number = 2
     
     @column({ isPrimary: true })
     public id: number
@@ -133,12 +133,12 @@ export default class User extends BaseModel {
         
             if (e.code === 'E_INVALID_AUTH_PASSWORD') {
 
-                if(user.status_id === User.STATUS_ACTIVE || user.status_id === User.STATUS_EXPIRED){
+                if(user.status_id === User.ACTIVE){
 
                     if ((retries > 0) && (user.attempts >= retries)) {
 
-                        if (user.status_id !== User.STATUS_LOCK) {
-                            user.status_id = User.STATUS_LOCK;
+                        if (user.status_id !== User.SUSPEND) {
+                            user.status_id = User.SUSPEND;
                             user.updatedAt = DateTime.local();
                             user.save();
 

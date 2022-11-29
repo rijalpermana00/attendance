@@ -1,17 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'shifts'
+  protected tableName = 'shift_maps'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('name', 255).notNullable();
-      table.string('description', 255).nullable();
-      table.string('time_in', 20).notNullable();
-      table.string('time_out', 20).notNullable();
+      table.integer('user_id').nullable();
+      table.foreign('user_id').references('users.id')
+      table.integer('shift_id').nullable();
+      table.foreign('shift_id').references('shifts.id')
       table.enu('status',['ACTIVE','INACTIVE']).notNullable().defaultTo('ACTIVE');
-
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
