@@ -4,7 +4,6 @@ import User from 'App/Models/User'
 import CreateUser from 'App/Mailers/CreateUser'
 import { Roles } from 'App/Enums/Roles';
 import { UserStatus } from 'App/Enums/UserStatus';
-import Generic from 'App/Models/Generic/Generic';
 
 export default class UsersController {
   
