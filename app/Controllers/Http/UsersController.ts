@@ -4,6 +4,7 @@ import User from 'App/Models/User'
 import CreateUser from 'App/Mailers/CreateUser'
 import { Roles } from 'App/Enums/Roles';
 import { UserStatus } from 'App/Enums/UserStatus';
+import Redis from '@ioc:Adonis/Addons/Redis';
 
 export default class UsersController {
   
@@ -208,10 +209,18 @@ export default class UsersController {
     public async list({request}: HttpContextContract){
         
         console.log(request);
+        
         try {
+            
+            const cachedUsers = await Redis.get('users')
+            if(cachedUsers){
+                return JSON.parse(cachedUsers)
+            }
             
             const user = new User();
             const list = user.list()
+            
+            await Redis.set('users', JSON.stringify(list))
             
             return list
             
