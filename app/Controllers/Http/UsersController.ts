@@ -207,6 +207,7 @@ export default class UsersController {
     
     public async list({request}: HttpContextContract){
         
+        console.log(request);
         try {
             
             const user = new User();
