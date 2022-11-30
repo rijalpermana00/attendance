@@ -30,7 +30,8 @@
     "@adonisjs/lucid",
     "@adonisjs/mail",
     "@adonisjs/bouncer",
-    "@adonisjs/redis"
+    "@adonisjs/redis",
+    "@adonisjs/i18n"
   ],
   "metaFiles": [
     {
@@ -40,7 +41,8 @@
     {
       "pattern": "resources/views/**/*.edge",
       "reloadServer": false
-    }
+    },
+    "resources/lang/**/*.(json|yaml)"
   ],
   "aceProviders": [
     "@adonisjs/repl"
