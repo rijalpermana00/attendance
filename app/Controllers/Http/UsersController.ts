@@ -208,7 +208,8 @@ export default class UsersController {
     
     public async list({request}: HttpContextContract){
         
-        console.log(request);
+        let req = request.only(['code','info','data']);
+        console.log(req.data)
         
         try {
             
@@ -218,10 +219,9 @@ export default class UsersController {
             }
             
             const user = new User();
-            const list = user.list()
+            const list = await user.list()
             
             await Redis.set('users', JSON.stringify(list))
-            
             return list
             
         } catch (e) {
