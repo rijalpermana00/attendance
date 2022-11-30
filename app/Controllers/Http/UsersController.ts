@@ -40,8 +40,8 @@ export default class UsersController {
             const user = new User()
 
             user.name = userValidation.name
-            user.phone = userValidation.phone
             user.email = userValidation.email
+            user.phone = userValidation.phone
             user.role_id = Roles.USER
             user.avatar = (typeof data.pictures !== 'undefined') ? data.pictures : null
             user.language = (typeof data.language !== 'undefined') ? data.language : 'en'
@@ -61,8 +61,15 @@ export default class UsersController {
                 await new CreateUser(request).send();
                 
                 /* set redis */
-                // let setRedis = await Redis.set('user_' + user.uuid, JSON.stringify(user))
-                // console.log(setRedis)
+                const cachedUsers = await Redis.get('users')
+                
+                if(cachedUsers){
+                    
+                    const lists = JSON.parse(cachedUsers)
+                    lists.push(user);
+                    await Redis.set('users', JSON.stringify(lists), 'EX', 600)
+                    
+                }
 
                 return {
                     code : 0,
@@ -215,14 +222,23 @@ export default class UsersController {
             
             const cachedUsers = await Redis.get('users')
             if(cachedUsers){
-                return JSON.parse(cachedUsers)
+                return {
+                    code : 0,
+                    info : 'Cached!',
+                    data : JSON.parse(cachedUsers),
+                }
             }
             
             const user = new User();
             const list = await user.list()
             
-            await Redis.set('users', JSON.stringify(list))
-            return list
+            await Redis.set('users', JSON.stringify(list),'EX',600)
+            
+            return {
+                code : 0,
+                info : 'Load From DB',
+                data : list,
+            }
             
         } catch (e) {
             

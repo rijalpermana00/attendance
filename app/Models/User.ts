@@ -50,7 +50,7 @@ export default class User extends BaseModel {
     @column({ serializeAs: null })
     public terminate_dtm: DateTime
     
-    @column()
+    @column({ serializeAs: null })
     public remember_me_token: string
 
     @column.dateTime({ autoCreate: true })
