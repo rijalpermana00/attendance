@@ -67,7 +67,7 @@ export default class UsersController {
                     
                     const lists = JSON.parse(cachedUsers)
                     lists.push(user);
-                    await Redis.set('users', JSON.stringify(lists), 'EX', 600)
+                    await Redis.set('users', JSON.stringify(lists), 'EX', 3600)
                     
                 }
 
@@ -81,7 +81,11 @@ export default class UsersController {
 
             }else{
 
-                return {'code':1,'info':'User failed to created','data':null};
+                return {
+                    code : 1,
+                    info :'failed to create user',
+                    data :null
+                }
             }
 
         } catch (e) {
@@ -232,7 +236,7 @@ export default class UsersController {
             const user = new User();
             const list = await user.list()
             
-            await Redis.set('users', JSON.stringify(list),'EX',600)
+            await Redis.set('users', JSON.stringify(list),'EX',3600)
             
             return {
                 code : 0,

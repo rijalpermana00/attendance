@@ -15,12 +15,6 @@ export default class ShiftMap extends BaseModel {
   public shift_id: number
   
   @column()
-  public time_in: string
-  
-  @column()
-  public time_out: string
-  
-  @column()
   public status: Status
 
   @column.dateTime({ autoCreate: true })
