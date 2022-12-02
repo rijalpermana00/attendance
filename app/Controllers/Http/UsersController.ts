@@ -5,48 +5,32 @@ import CreateUser from 'App/Mailers/CreateUser'
 import { Roles } from 'App/Enums/Roles';
 import { UserStatus } from 'App/Enums/UserStatus';
 import Redis from '@ioc:Adonis/Addons/Redis';
+import Controller from './Controller';
+import RegisterUserValidator from 'App/Validators/RegisterUserValidator';
 
-export default class UsersController {
+export default class UsersController extends Controller {
   
     public async register ({ request, auth }: HttpContextContract) {
         /**
          * Validate user details
          */
 
-        let req = request.only(['code','info','data']);
-        let data = JSON.parse(req.data);
-        
-        const validationSchema = schema.create({
-            name: schema.string({ trim: true }),
-            phone: schema.string({ trim: true }, [
-                rules.unique({ table: 'users', column: 'phone' }),
-            ]),
-            email: schema.string({ trim: true }, [
-                rules.email(),
-                rules.unique({ table: 'users', column: 'email' }),
-            ]),
-            password: schema.string({ trim: true }, [
-                rules.confirmed(),
-            ]),
-        })
+        const req = await super.parseInput(request);
 
         try {
 
-            const userValidation = await validator.validate({
-                schema: validationSchema,
-                data: data,
-            })
+            const payload = await req.validate(RegisterUserValidator)
         
             const user = new User()
 
-            user.name = userValidation.name
-            user.email = userValidation.email
-            user.phone = userValidation.phone
+            user.name = payload.name
+            user.email = payload.email
+            user.phone = payload.phone
             user.role_id = Roles.USER
-            user.avatar = (typeof data.pictures !== 'undefined') ? data.pictures : null
-            user.language = (typeof data.language !== 'undefined') ? data.language : 'en'
+            user.avatar = (typeof payload.pictures !== 'undefined') ? payload.pictures : null
+            user.language = (typeof payload.language !== 'undefined') ? payload.language : 'en'
             user.status_id = UserStatus.ACTIVE
-            user.password = userValidation.password
+            user.password = payload.password
             const result = await user.save()
             
             if(result.id){

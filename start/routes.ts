@@ -53,6 +53,10 @@ Route.group(() => {
 		Route.post('/map', 'ShiftsController.map').middleware(["auth:api","role:admin"])
 	}).prefix('/shift')
 	
+	Route.group(() => {
+		Route.post('/create', 'LocationsController.store').middleware(["auth:api","role:admin"])
+	}).prefix('/location')
+	
 }).prefix('/api')
 
 Route.get('/index', 'UsersController.index').middleware("auth:api")
