@@ -50,7 +50,7 @@ export default class UsersController extends Controller {
                     
                     const lists = JSON.parse(cachedUsers)
                     lists.push(user);
-                    await Redis.set('users', JSON.stringify(lists), 'EX', 3600)
+                    await Redis.set('users', JSON.stringify(lists))
                     
                 }
 
@@ -219,7 +219,7 @@ export default class UsersController extends Controller {
             const user = new User();
             const list = await user.list()
             
-            await Redis.set('users', JSON.stringify(list),'EX',3600)
+            await Redis.set('users', JSON.stringify(list))
             
             return {
                 code : 0,
