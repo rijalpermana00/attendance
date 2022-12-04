@@ -10,11 +10,8 @@ import RegisterUserValidator from 'App/Validators/RegisterUserValidator';
 export default class UsersController extends Controller {
   
     public async register ({ request, auth }: HttpContextContract) {
-        /**
-         * Validate user details
-         */
 
-        const req = await super.parseInput(request);
+        const req = await super.parseRequest(request);
 
         try {
 
@@ -58,7 +55,7 @@ export default class UsersController extends Controller {
                     code : 0,
                     info : 'User Created',
                     data : await auth.use('api').login(user, {
-                        expiresIn: '10m',
+                        expiresIn: '1 day',
                     })
                 };
 
@@ -83,25 +80,12 @@ export default class UsersController extends Controller {
     }
     public async login ({ auth, request }: HttpContextContract) {
 
-        let req = request.only(['code','info','data']);
+        const req = await super.parseDataInput(request);
 
-        if(req?.data){
-
-            var data = JSON.parse(req.data);
-
-        }else{
-            
-            return {
-                code : 99,
-                info : 'Json is not valid',
-                data : null
-            };
-        }
-        
         try {
             
             const user = new User();
-            const result = await user.authenticate(auth,data);
+            const result = await user.authenticate(auth,req?.data);
 
             return result;
 
@@ -169,25 +153,12 @@ export default class UsersController extends Controller {
 
     public async forgotPassword({request}: HttpContextContract){
         
-        let req = request.only(['code','info','data']);
-
-        if(req?.data){
-
-            var data = JSON.parse(req.data);
-
-        }else{
-            
-            return {
-                code : 415,
-                info : 'Json is not valid',
-                data : null
-            };
-        }
+        const req = await super.parseDataInput(request);
 
         try {
             
             const user = new User();
-            const result = await user.forgotPassword(data);
+            const result = await user.forgotPassword(req?.data);
             return result;
 
         } catch (e) {

@@ -102,7 +102,7 @@ export default class User extends BaseModel {
             }            
 
             const token = await auth.use('api').attempt(data.uid, data.password,{
-                expiresIn: '10m',
+                expiresIn: '1 day',
             });
             
             return {
