@@ -6,6 +6,7 @@ import { UserStatus } from 'App/Enums/UserStatus';
 import Redis from '@ioc:Adonis/Addons/Redis';
 import Controller from './Controller';
 import RegisterUserValidator from 'App/Validators/RegisterUserValidator';
+import { Status } from 'App/Enums/Status';
 
 export default class UsersController extends Controller {
   
@@ -206,5 +207,57 @@ export default class UsersController extends Controller {
                 data : e.info,
             }
         }
+    }
+    
+    public async get({ request }: HttpContextContract) {
+        
+        const req = await super.parseDataInput(request);
+        let filter = 'id'
+        
+        if(parseInt(req?.code) === 1) {
+            filter = 'name'
+        }
+        
+        if(typeof req?.data?.value === 'undefined'){
+            return {
+                code : 400,
+                info : 'sorry, value cannot be empty',
+            }
+        }
+        
+        if(filter === 'id'){
+            const alphabet = await super.checkAlphabet(req?.data.value);
+            
+            if(alphabet){
+                
+                return {
+                    code : 400,
+                    info : 'Check your code and value combination',
+                }
+            }
+        }
+        
+        // try{
+            const shift = await User.query().where(filter, req?.data.value).preload('location', (location) => {
+                location.where('location_maps.status', Status.ACTIVE)
+            }).preload('shift', (location) => {
+                location.where('shift_maps.status', Status.ACTIVE)
+            });
+            
+            return {
+                code : 0,
+                info : 'Location loaded',
+                data : shift
+            }
+            
+        // } catch (e) {
+
+        //     return {
+        //         code : 1,
+        //         info : 'Failed to Load, contact your admin',
+        //         data : e
+        //     }
+        // }
+        
     }
 }

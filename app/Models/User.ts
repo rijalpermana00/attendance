@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel, beforeCreate, hasManyThrough, HasManyThrough } from '@ioc:Adonis/Lucid/Orm'
 import Route from '@ioc:Adonis/Core/Route'
 import Env from '@ioc:Adonis/Core/Env'
 import UserLocked from 'App/Mailers/UserLocked'
@@ -8,6 +8,10 @@ import ForgotPassword from 'App/Mailers/ForgotPassword'
 import { generate } from 'generate-password-ts'
 import {v4 as uuidv4 } from 'uuid'
 import { UserStatus } from 'App/Enums/UserStatus'
+import LocationMap from './LocationMap'
+import Location from './Location'
+import Shift from './Shift'
+import ShiftMap from './ShiftMap'
 
 export default class User extends BaseModel {
     
@@ -58,6 +62,22 @@ export default class User extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updatedAt: DateTime
+    
+    @hasManyThrough([() => Location, () => LocationMap],{
+        localKey: 'id', //on user model
+        foreignKey: 'user_id', //foreign key user on locationmap
+        throughLocalKey: 'location_id', //foreign key location on locationmap
+        throughForeignKey: 'id', //on location model
+    })
+    public location: HasManyThrough<typeof Location>
+    
+    @hasManyThrough([() => Shift, () => ShiftMap],{
+        localKey: 'id', //on user model
+        foreignKey: 'user_id', //foreign key user on locationmap
+        throughLocalKey: 'shift_id', //foreign key location on locationmap
+        throughForeignKey: 'id', //on location model
+    })
+    public shift: HasManyThrough<typeof Shift>
     
     @beforeCreate()
     public static assignUuid(user: User) {

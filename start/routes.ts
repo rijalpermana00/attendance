@@ -46,11 +46,16 @@ Route.post('login', 'UsersController.login')
 Route.get('logout', 'UsersController.logout').middleware("auth:api")
 
 Route.group(() => {
-	Route.get('/users', 'UsersController.list').middleware(["auth:api","role:admin"])
+	Route.group(() => {
+		Route.get('/', 'UsersController.list').middleware(["auth:api","role:admin"])
+		Route.post('/', 'UsersController.get').middleware(["auth:api","role:admin"])
+	}).prefix('/users')
 	
 	Route.group(() => {
 		Route.post('/create', 'ShiftsController.store').middleware(["auth:api","role:admin"])
 		Route.post('/map', 'ShiftsController.map').middleware(["auth:api","role:admin"])
+		Route.post('/', 'ShiftsController.index').middleware(["auth:api"])
+		Route.get('/list', 'ShiftsController.list').middleware(["auth:api"])
 	}).prefix('/shift')
 	
 	Route.group(() => {
