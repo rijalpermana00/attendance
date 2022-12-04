@@ -9,6 +9,61 @@ import Controller from './Controller';
 
 export default class LocationsController extends Controller{
     
+    public async index ({ request }: HttpContextContract) {
+        
+        const req = await super.parseDataInput(request);
+        let filter = 'id'
+        
+        switch (parseInt(req?.code)) {
+            case 1:
+                filter = 'name'
+                break;
+            case 2:
+                filter  = 'address'
+            default:
+                break;
+        }
+        
+        if(typeof req?.data?.value === 'undefined'){
+            return {
+                code : 400,
+                info : 'sorry, value cannot be empty',
+            }
+        }
+        
+        if(filter === 'id'){
+            const alphabet = await super.checkAlphabet(req?.data.value);
+            
+            if(alphabet){
+                
+                return {
+                    code : 400,
+                    info : 'Check your code and value combination',
+                }
+            }
+        }
+        
+        try{
+            const location = await Location.query().where(filter, req?.data.value).preload('user', (user) => {
+                user.where('status', Status.ACTIVE)
+            });
+            
+            return {
+                code : 0,
+                info : 'Location loaded',
+                data : location
+            }
+            
+        } catch (e) {
+
+            return {
+                code : 1,
+                info : 'Failed to Load, contact your admin',
+            }
+        }
+        
+    }
+    
     public async store ({ request }: HttpContextContract) {
         
         const req = await super.parseRequest(request);

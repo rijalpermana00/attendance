@@ -56,7 +56,8 @@ Route.group(() => {
 	Route.group(() => {
 		Route.post('/create', 'LocationsController.store').middleware(["auth:api","role:admin"])
 		Route.post('/map', 'LocationsController.map').middleware(["auth:api","role:admin"])
-		Route.get('/', 'LocationsController.list').middleware(["auth:api","role:admin"])
+		Route.post('/', 'LocationsController.index').middleware(["auth:api"])
+		Route.get('/list', 'LocationsController.list').middleware(["auth:api"])
 	}).prefix('/location')
 	
 }).prefix('/api')

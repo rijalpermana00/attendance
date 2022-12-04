@@ -20,6 +20,7 @@ export default class Controller {
             
             return {
                 code : req?.code,
+                info : req?.info,
                 data : data
             }
 
@@ -32,5 +33,16 @@ export default class Controller {
             };
         }
         
+    }
+    
+    public async checkAlphabet(value){
+        const regExp = /[a-zA-Z]/g;
+        
+        if(regExp.test(value)){
+            return true
+        }
+        
+        return false
+
     }
 }
