@@ -1,7 +1,7 @@
 import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class MapUserLocationValidator {
+export default class MapUserShiftValidator {
     constructor(protected ctx: HttpContextContract) {}
 
     /*
@@ -25,7 +25,7 @@ export default class MapUserLocationValidator {
     */
     public schema = schema.create({
         user_id: schema.number(),
-        location_id: schema.number(),
+        shfit_id: schema.number(),
     })
 
     /**

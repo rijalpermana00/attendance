@@ -3,6 +3,7 @@ import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import { Status } from 'App/Enums/Status';
 import Shift from 'App/Models/Shift';
 import ShiftMap from 'App/Models/ShiftMap';
+import MapUserShiftValidator from 'App/Validators/MapUserShiftValidator';
 import Controller from './Controller';
 
 export default class ShiftsController extends Controller{
@@ -112,27 +113,28 @@ export default class ShiftsController extends Controller{
     
     public async map({request}:HttpContextContract){
         
-        let req = request.only(['code','info','data']);
-        let data = JSON.parse(req?.data);
-        
-        const validationSchema = schema.create({
-            user_id: schema.number(),
-            shift_id: schema.number(),
-        })
+        const req = await super.parseRequest(request);
         
         try {
-
-            const mapValidation = await validator.validate({
-                schema: validationSchema,
-                data: data,
+            
+            const payload = await req.validate(MapUserShiftValidator)
+            
+            const exist = await ShiftMap.query()
+                .where('user_id',payload?.user_id)
+                .where('shift_id',payload?.shift_id)
+                .first()
+            
+            if(exist){
+                
+                exist.status = Status.INACTIVE
+                
+                await exist.save()
+            }
+            
+            const result = await ShiftMap.create({
+                user_id: payload?.user_id,
+                shift_id: payload?.shift_id      
             })
-            
-            const mapper = new ShiftMap()
-            
-            mapper.user_id = mapValidation.user_id
-            mapper.shift_id = mapValidation.shift_id
-            
-            const result = await mapper.save()
             
             if(result.id){
 
