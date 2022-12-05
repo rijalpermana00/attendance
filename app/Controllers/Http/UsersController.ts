@@ -246,7 +246,7 @@ export default class UsersController extends Controller {
             
             return {
                 code : 0,
-                info : 'Location loaded',
+                info : 'User loaded',
                 data : shift
             }
             
