@@ -66,7 +66,8 @@ Route.group(() => {
 	}).prefix('/location')
 	
 	Route.group(() => {
-		Route.post('/', 'AttendancesController.index').middleware("auth:api")
+		Route.post('/checkin', 'AttendancesController.checkIn').middleware("auth:api")
+		Route.post('/checkout', 'AttendancesController.checkOut').middleware("auth:api")
 	}).prefix('/attendance')
 	
 	Route.group(() => {
