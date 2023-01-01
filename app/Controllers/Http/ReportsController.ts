@@ -5,7 +5,7 @@ export default class ReportsController extends Controller{
     
     public async index ({ request }: HttpContextContract) {
         
-        // const req = await super.parseDataInput(request);
+        await super.parseDataInput(request);
         
         // try{
         //     const location = await Location.query().where(filter, req?.data.value).preload('user', (user) => {

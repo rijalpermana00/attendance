@@ -66,6 +66,10 @@ Route.group(() => {
 	}).prefix('/location')
 	
 	Route.group(() => {
+		Route.post('/', 'AttendancesController.index').middleware("auth:api")
+	}).prefix('/attendance')
+	
+	Route.group(() => {
 		Route.post('/', 'ReportsController.index').middleware(["auth:api","role:admin"])
 	}).prefix('/report')
 	
