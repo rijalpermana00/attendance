@@ -25,7 +25,7 @@ export default class MapUserShiftValidator {
     */
     public schema = schema.create({
         user_id: schema.number(),
-        shfit_id: schema.number(),
+        shift_id: schema.number(),
     })
 
     /**

@@ -12,12 +12,25 @@ export default class ShiftsController extends Controller{
         
         const req = await super.parseDataInput(request);
         let filter = 'id'
+        let value = req?.data?.value
         
         if(parseInt(req?.code) === 1) {
             filter = 'name'
         }
         
-        if(typeof req?.data?.value === 'undefined'){
+        switch (parseInt(req?.code)) {
+            case 1:
+                filter = 'name'
+                break;
+            case 2:
+                filter = 'user'
+                break;
+            default:
+                filter = 'id'
+                break;
+        }
+        
+        if(typeof value === 'undefined'){
             return {
                 code : 400,
                 info : 'sorry, value cannot be empty',
@@ -25,7 +38,7 @@ export default class ShiftsController extends Controller{
         }
         
         if(filter === 'id'){
-            const alphabet = await super.checkAlphabet(req?.data.value);
+            const alphabet = await super.checkAlphabet(value);
             
             if(alphabet){
                 
@@ -35,11 +48,24 @@ export default class ShiftsController extends Controller{
                 }
             }
         }
+            
+        if(filter === 'user'){
+            const shiftMap = await ShiftMap.query().where('user_id',value).where('status',Status.ACTIVE).first();
+            
+            if(!shiftMap){
+                return {
+                    code : 404,
+                    info : 'Shift Not Found',
+                }
+            }
+            
+            filter = 'id'
+            value = shiftMap.shift_id;
+        }
         
         try{
-            const shift = await Shift.query().where(filter, req?.data.value).preload('user', (user) => {
-                user.where('status', Status.ACTIVE)
-            });
+            
+            const shift = await Shift.query().where(filter, value);
             
             return {
                 code : 0,
@@ -155,7 +181,7 @@ export default class ShiftsController extends Controller{
             
             
         } catch (e) {
-
+            console.log(e)
             return {
                 code : 1,
                 info : 'user and shift fail to mapped',

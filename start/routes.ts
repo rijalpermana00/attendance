@@ -68,11 +68,11 @@ Route.group(() => {
 	Route.group(() => {
 		Route.post('/checkin', 'AttendancesController.checkIn').middleware("auth:api")
 		Route.post('/checkout', 'AttendancesController.checkOut').middleware("auth:api")
+		Route.group(() => {
+			Route.post('/', 'AttendancesController.report').middleware(["auth:api","role:admin"])
+			Route.post('/detail', 'AttendancesController.detail').middleware(["auth:api","role:admin"])
+		}).prefix('/report')
 	}).prefix('/attendance')
-	
-	Route.group(() => {
-		Route.post('/', 'ReportsController.index').middleware(["auth:api","role:admin"])
-	}).prefix('/report')
 	
 }).prefix('/api')
 
